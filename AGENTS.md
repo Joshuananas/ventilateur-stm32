@@ -116,4 +116,12 @@
 - `erase()` (`flasherase`) efface les deux secteurs.
 - `board_upload.maximum_size = 131072` : firmware plafonné aux secteurs 0-4 (usage actuel 81 156 o, 61,9 %).
 - Validation PC : compilation OK (RAM 33 348 o), 46/46 tests.
-- Validation matériel : flashé en DFU ; migration automatique du blob historique (relu comme seq=0, 3 obs + 14 boutons restaurés) ; premier `save` écrit en copie B (secteur 5, seq=1) vérifié, `[FLASH] sauvegarde OK`, slots marqués `(flash)`.
+- Validation matériel (A/B) : flashé en DFU ; migration automatique du blob historique (relu comme seq=0, 3 obs + 14 boutons restaurés) ; premier `save` écrit en copie B (secteur 5, seq=1) vérifié, `[FLASH] sauvegarde OK`, slots marqués `(flash)`.
+
+## Git et GitHub
+
+- Dépôt public : https://github.com/Joshuananas/ventilateur-stm32 (branche `main`, remote `origin`).
+- Aucune identité Git n'est configurée sur ce PC : passer l'identité à chaque commit, sans modifier la config : `git -c user.name="Joshuananas" -c user.email="118482374+Joshuananas@users.noreply.github.com" commit ...`.
+- Après chaque étape validée (tests + compilation), proposer à l'utilisateur un commit puis `git push` ; ne jamais pousser sans son accord.
+- Authentification via Git Credential Manager (connexion navigateur déjà faite). Si elle redemande : `git -c credential.gitHubAuthModes=browser push`.
+- Non publiés (`.gitignore`) : `.pio/`, `compile_commands.json`, fichiers `.vscode` générés, `*.code-workspace`, `logs/*.log`, `__pycache__/` — ils contiennent des chemins personnels ou sont régénérés.
