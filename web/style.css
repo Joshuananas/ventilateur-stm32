@@ -1,0 +1,169 @@
+  :root {
+    --bg:#0b1020; --bg2:#0f1526; --card:#161f33; --card2:#1a2438;
+    --accent:#4da3ff; --accent2:#7c5cff; --ok:#3ddc84; --warn:#ffb74d;
+    --err:#ff6b6b; --txt:#e6edf7; --dim:#8b98ad; --line:#26304a;
+  }
+  * { box-sizing:border-box; }
+  body { margin:0; color:var(--txt); font-family:system-ui,'Segoe UI',Roboto,sans-serif;
+         background:radial-gradient(1200px 600px at 70% -10%, #1b2a4d33, transparent),
+                    radial-gradient(900px 500px at -10% 20%, #2a1b4d22, transparent), var(--bg); }
+  header { display:flex; align-items:center; gap:12px; padding:14px 22px;
+           background:rgba(22,31,51,.85); backdrop-filter:blur(8px);
+           border-bottom:1px solid var(--line); position:sticky; top:0; z-index:50; }
+  header h1 { font-size:18px; margin:0; font-weight:650; letter-spacing:.02em; }
+  .pill { font-size:12px; padding:3px 12px; border-radius:999px; background:#333;
+          transition:background .3s, color .3s; }
+  .pill.on { background:var(--ok); color:#052; }
+  .pill.off { background:var(--err); color:#fff; }
+  .pill.auto { background:var(--ok); color:#052; }
+  .pill.manual { background:var(--warn); color:#321; }
+  .pill.learned-mode { background:linear-gradient(90deg,var(--ok),#34c9ff); color:#04202f; font-weight:600; }
+
+  /* ---------- Onglets ---------- */
+  nav.tabs { display:flex; gap:4px; padding:0 22px; background:rgba(22,31,51,.85);
+             backdrop-filter:blur(8px); border-bottom:1px solid var(--line);
+             position:sticky; top:55px; z-index:49; overflow-x:auto; }
+  nav.tabs button { background:none; border:none; border-bottom:3px solid transparent;
+                    color:var(--dim); font-size:14px; padding:12px 18px; border-radius:0;
+                    cursor:pointer; transition:color .2s, border-color .2s; white-space:nowrap; }
+  nav.tabs button:hover { color:var(--txt); background:none; }
+  nav.tabs button.active { color:var(--accent); border-bottom-color:var(--accent); font-weight:600; }
+  nav.tabs button .dot { color:var(--ok); }
+
+  main { max-width:1150px; margin:auto; padding:18px 20px 40px; }
+  .tabpane { display:none; animation:fadeUp .28s ease; }
+  .tabpane.active { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+  @keyframes fadeUp { from { opacity:0; transform:translateY(8px); } }
+
+  .card { background:linear-gradient(180deg,var(--card),var(--card2));
+          border-radius:14px; padding:18px; border:1px solid var(--line);
+          box-shadow:0 4px 14px rgba(0,0,0,.25); }
+  .card h2 { margin:0 0 14px; font-size:13px; text-transform:uppercase;
+             letter-spacing:.09em; color:var(--dim); }
+  .span2 { grid-column:1/-1; }
+
+  /* ---------- Jauges ---------- */
+  .gauges { display:flex; gap:14px; flex-wrap:wrap; }
+  .gauge { flex:1; min-width:110px; text-align:center; background:#10182a;
+           border:1px solid #20293f; border-radius:12px; padding:16px 8px;
+           transition:border-color .3s; }
+  .gauge .val { font-size:28px; font-weight:750; color:var(--accent);
+                transition:color .4s; font-variant-numeric:tabular-nums; }
+  .gauge .lbl { font-size:11px; color:var(--dim); margin-top:5px; }
+  .gauge.hot .val { color:var(--err); }
+  .gauge.warm .val { color:var(--warn); }
+
+  /* ---------- Rotor animé ---------- */
+  .fanvis { display:flex; align-items:center; gap:20px; }
+  .rotor { width:110px; height:110px; flex:0 0 auto; border-radius:50%;
+           background:radial-gradient(circle,#223055 32%,#141b2b 33%);
+           border:3px solid #33477a; position:relative;
+           display:flex; align-items:center; justify-content:center; }
+  .rotor .blades { font-size:64px; line-height:1; color:var(--accent);
+                   transform-origin:center; user-select:none; }
+  .rotor.spin .blades { animation:spin var(--spinDur,0s) linear infinite; }
+  .rotor.spin.rev .blades { animation-direction:reverse; }
+  @keyframes spin { to { transform:rotate(360deg); } }
+  .fanvis .big { font-size:15px; line-height:1.7; }
+
+  .state { display:grid; grid-template-columns:repeat(5,1fr); gap:10px; }
+  .state .sv { background:#10182a; border:1px solid #20293f; border-radius:12px;
+               padding:12px 6px; text-align:center; transition:transform .15s; }
+  .state .sv b { display:block; font-size:19px; }
+  .state .sv span { font-size:11px; color:var(--dim); }
+  .banner { background:var(--err); color:#fff; border-radius:10px; padding:9px 14px;
+            font-size:13px; margin-bottom:12px; }
+  .banner.hidden { display:none; }
+  .banner.info { background:#1d3a5f; border:1px solid #2f5c96; }
+  .sync { display:flex; flex-wrap:wrap; gap:8px; align-items:center; margin-top:14px; font-size:13px; }
+  .advice { margin-top:14px; padding:10px 14px; border-radius:10px; font-size:13.5px;
+    background:rgba(255,184,77,.08); border:1px solid rgba(255,184,77,.25); color:var(--txt); }
+
+  button { background:#223055; color:var(--txt); border:1px solid #33477a; border-radius:9px;
+           padding:9px 15px; font-size:14px; cursor:pointer;
+           transition:background .15s, transform .1s, box-shadow .15s; }
+  button:hover { background:#2b3d6e; transform:translateY(-1px); }
+  button:active { transform:translateY(0); }
+  button.primary { background:var(--accent); color:#04203f; font-weight:650; border:none; }
+  button.danger { background:#3a1c26; border-color:#6e2b3d; color:#ffb3bb; }
+  button.mini { font-size:11px; padding:2px 9px; margin-left:6px; }
+  .btns { display:flex; flex-wrap:wrap; gap:8px; }
+  .row { display:flex; gap:8px; align-items:center; margin-top:12px; }
+  input[type=text] { flex:1; background:#0a0e18; border:1px solid #33477a; color:var(--txt);
+                     border-radius:9px; padding:9px 11px; font-family:Consolas,monospace; }
+  select { background:#0a0e18; border:1px solid #33477a; color:var(--txt);
+           border-radius:9px; padding:7px 9px; }
+
+  /* ---------- Telecommande ---------- */
+  .remote-wrap { display:flex; gap:24px; align-items:flex-start; flex-wrap:wrap; }
+  .remote { background:linear-gradient(160deg,#f7f5f1,#e8e4dc); border-radius:60px/80px;
+            padding:26px 22px; width:200px; flex:0 0 auto;
+            display:flex; flex-direction:column; align-items:center; gap:14px;
+            box-shadow:0 8px 22px rgba(0,0,0,.5), inset 0 1px 0 #fff; }
+  .rbrand { color:#999; font-style:italic; font-size:13px; margin-top:-6px; }
+  .wheel { position:relative; width:132px; height:132px; }
+  .wheel button { position:absolute; width:40px; height:40px; border-radius:50%;
+                  background:#fdfcf9; color:#444; border:1px solid #d8d4cc;
+                  font-weight:650; padding:0; }
+  .wheel button:hover { background:#eee; transform:none; }
+  .wheel .center { left:46px; top:46px; background:#fff; }
+  .rbtn { width:56px; height:40px; border-radius:50%; background:#fdfcf9; color:#444;
+          border:1px solid #d8d4cc; font-size:15px; padding:0; }
+  .rgrid { display:grid; grid-template-columns:1fr 1fr; gap:10px 24px; }
+  .rbtn:hover { background:#eee; transform:none; }
+  .remote button { transition:box-shadow .2s, border-color .2s; }
+  .remote button.learned { border-color:var(--ok); box-shadow:0 0 0 2px var(--ok); }
+  .remote button.learning { border-color:var(--warn); box-shadow:0 0 0 3px var(--warn); animation:pulse 1s infinite; }
+  @keyframes pulse { 50% { opacity:.6; } }
+  .remote button.miss { border-color:var(--err); box-shadow:0 0 0 2px var(--err); }
+  .remote button.heard { border-color:var(--accent); box-shadow:0 0 0 4px var(--accent); }
+  /* cochette d'apprentissage directement sur le bouton */
+  /* NB : les boutons de la roue sont deja position:absolute — ne pas
+     redefinir leur position, seuls les .rbtn (statiques) en ont besoin */
+  .remote .rbtn { position:relative; }
+  .remote button.learned::after { content:'✓'; position:absolute; top:-7px; right:-7px;
+      width:16px; height:16px; border-radius:50%; background:var(--ok); color:#052;
+      font-size:10px; font-weight:800; line-height:16px; text-align:center;
+      box-shadow:0 1px 3px rgba(0,0,0,.4); pointer-events:none; }
+  .remote button.dimmed { opacity:.45; }
+  #wizard { flex:1; min-width:230px; font-size:14px; }
+  #wizard .step { background:#10182a; border-radius:10px; padding:12px; margin-bottom:10px;
+                  border-left:3px solid var(--accent); }
+  #wizard .done { color:var(--ok); }
+  .modeToggle { display:flex; gap:8px; margin-bottom:14px; }
+  .modeToggle button.active { background:var(--accent); color:#04203f; font-weight:650; }
+
+  /* ---------- Apprentissage ---------- */
+  .lrgrid { display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:10px; margin-bottom:12px; }
+  .lrbox { background:#10182a; border:1px solid #20293f; border-radius:10px; padding:11px 13px; font-size:13px; }
+  .lrbox .t { font-size:11px; color:var(--dim); text-transform:uppercase; letter-spacing:.06em; margin-bottom:4px; }
+  .knowstrip { display:flex; gap:12px; overflow-x:auto; padding:8px 2px 12px; scrollbar-width:thin; }
+  .kchip { flex:0 0 auto; min-width:195px; background:#10182a; border:1px solid #2a3a5e;
+           border-radius:12px; padding:12px 14px; font-size:12px; line-height:1.55;
+           transition:border-color .2s, transform .15s; }
+  .kchip:hover { border-color:var(--accent); transform:translateY(-2px); }
+  .kchip b { font-size:15px; }
+  .kchip .confwrap { background:#0a0e18; border-radius:3px; height:6px; margin-top:6px; overflow:hidden; }
+  .kchip .conf { display:block; height:6px; border-radius:3px; background:var(--ok); transition:width .5s; }
+
+  /* ---------- Journaux ---------- */
+  #logbox { height:230px; overflow-y:auto; background:#070b14; border-radius:10px;
+            padding:11px; font-family:Consolas,monospace; font-size:12.5px;
+            white-space:pre-wrap; border:1px solid #1c2438; }
+  .evbox { height:180px; overflow-y:auto; font-family:Consolas,monospace; font-size:12px;
+           background:#070b14; border:1px solid #1c2438; border-radius:8px;
+           padding:8px; white-space:pre-wrap; }
+  .evbox .em { color:#7dd3fc; }
+  .evbox .rx { color:#86efac; }
+  .evbox .beep { color:#fbbf24; }
+
+  .light-warm { color:#ffb347; } .light-neutral { color:#fff3c4; }
+  .light-cool { color:#9fd3ff; } .light-off { color:var(--dim); }
+  .sub { font-size:12px; color:var(--dim); }
+  h2 button.mini { vertical-align:middle; }
+
+  @media (max-width: 820px) {
+    .tabpane.active { grid-template-columns:1fr; }
+    .state { grid-template-columns:repeat(3,1fr); }
+    header h1 { font-size:15px; }
+  }

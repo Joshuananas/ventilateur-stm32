@@ -1,0 +1,10 @@
+{
+  "synthetic": true,
+  "state": "[STATE] mode=MANUAL known=1 power=1 speed=2 rev=1 light=OFF manual_left_min=420",
+  "learn": "[LEARN] obs=1/64 mode=SEUILS action=v2/N raison=seuils fixes eval=10 jour=o hiver=o soleil=n Text=-- seuils=24.0/27.0/30.0 savoir=0 ban=0 ress=25.4 suspect=n fige=1 figetemp=24.0 conf=-1 decision=v2/N evaluating=v2/R",
+  "legacyLearn": "[LEARN] obs=1/64 mode=SEUILS action=v2/N raison=seuils fixes eval=10 jour=o hiver=o soleil=n Text=-- seuils=24.0/27.0/30.0 savoir=0 ban=0 ress=25.4 suspect=n fige=1 figetemp=24.0 conf=-1",
+  "observation": "[OBS] i=0 v=2 dir=R t0=24.00 t1=24.10 hum=56.0 raw=0.10 expected=0.20 effect=-0.10",
+  "preference": "[PREF] v2/R temp=24.0 hum=56 hiver=1 poids=3/10",
+  "knowledge": "[KNOW] i=0 v2/R temp=24.0 hum=56 delta=-0.10 n=3 conf=60",
+  "status": "[STATUS] mode=MANUEL T=24.0C H=56.0% P=1000.0hPa Fan=2/REVERSE obs=1/64"
+}

@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BlackPill Ventilateur — Console</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header>
+  <h1>🌀 BlackPill Ventilateur</h1>
+  <span id="connPill" class="pill off">déconnecté</span>
+  <span id="modePill" class="pill">—</span>
+  <span style="flex:1"></span>
+  <button id="btnMic">🎤 Bip off</button>
+  <span id="micInfo" style="font-size:12px;color:var(--dim);min-width:90px"></span>
+  <button id="btnConn" class="primary">Connecter</button>
+</header>
+
+<nav class="tabs">
+  <button data-tab="pilot" class="active">🎛 Pilotage</button>
+  <button data-tab="brain">🧠 Apprentissage <span class="dot" id="dotBrain"></span></button>
+  <button data-tab="env">🌡 Capteurs</button>
+  <button data-tab="adv">⚙️ Avancé</button>
+</nav>
+
+<main>
+<!-- ============ PILOTAGE ============ -->
+<section class="tabpane active" id="tab-pilot">
+  <div class="card span2">
+    <h2>État du ventilateur</h2>
+    <div id="unknownBanner" class="banner">⚠ État inconnu — le STM32 ne sait pas dans quel état est le ventilateur. Synchronise ci-dessous (ou appuie sur un bouton de la vraie télécommande).</div>
+    <div class="fanvis">
+      <div class="rotor" id="rotor"><span class="blades">🌀</span></div>
+      <div class="big">
+        <div><b id="stMode">—</b> <span class="sub" id="stModeSub">mode</span></div>
+        <div id="fanResume" class="sub">En attente de données…</div>
+      </div>
+    </div>
+    <div class="state" style="margin-top:14px">
+      <div class="sv"><b id="stPower">—</b><span>alimentation</span></div>
+      <div class="sv"><b id="stSpeed">—</b><span>vitesse</span></div>
+      <div class="sv"><b id="stRev">—</b><span>sens</span></div>
+      <div class="sv"><b id="stLight">—</b><span>lumière</span></div>
+      <div class="sv"><b id="gFan">—</b><span>ventilateur</span></div>
+    </div>
+    <div id="advice" class="advice">💡 Conseil du programme : en attente de données…</div>
+    <div class="sync">
+      <b>L'état affiché ne colle pas à la réalité ?</b> Déclare ce que tu vois :
+      <select id="syP"><option value="1">Ventilateur ON</option><option value="0">Ventilateur OFF</option></select>
+      <select id="syS"><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option><option>6</option></select>
+      <select id="syR"><option value="0">Sens normal</option><option value="1">Reverse</option></select>
+      <select id="syL"><option value="0">Lumière off</option><option value="1">Chaud</option><option value="2">Neutre</option><option value="3">Froid</option></select>
+      <button id="btnSync" class="primary">Corriger la vision</button>
+      <button data-cmd="forgesync" title="Émet réellement OFF puis vitesse 1 — impose un état connu au ventilateur">🔄 Imposer v1 réel</button>
+      <span class="sub" style="font-size:12px">« Corriger » = tu déclares ce que tu vois, rien n'est émis · « Imposer » = émet OFF puis v1, le ventilateur se cale tout seul.</span>
+      <span style="flex:1"></span>
+      <button data-cmd="auto">▶ AUTO</button>
+      <button data-cmd="manual">✋ MANUEL</button>
+    </div>
+  </div>
+
+  <div class="card span2">
+    <h2>Télécommande virtuelle</h2>
+    <div class="modeToggle">
+      <button id="mUse" class="active">▶ Utilisation</button>
+      <button id="mLearn">🎓 Apprentissage</button>
+    </div>
+    <div class="remote-wrap">
+      <div class="remote">
+        <div class="wheel" id="wheel">
+          <button class="center" data-slot="0">⏻</button>
+        </div>
+        <div class="rgrid">
+          <button class="rbtn" data-slot="7">💡</button>
+          <button class="rbtn" data-slot="8">↕</button>
+          <button class="rbtn" data-slot="9">−</button>
+          <button class="rbtn" data-slot="10">+</button>
+          <button class="rbtn" data-slot="11">1H</button>
+          <button class="rbtn" data-slot="12">3H</button>
+        </div>
+        <div><button class="rbtn" data-slot="13" style="width:70px">6H</button></div>
+        <div class="rbrand">Newday</div>
+      </div>
+      <div id="wizard">
+        <div class="step" id="wizMsg">Mode <b>utilisation</b> : clique un bouton pour émettre, maintiens −/+ pour régler la luminosité.</div>
+        <div class="step" id="wizList" style="font-size:13px;padding:7px 12px;color:var(--dim)"></div>
+        <div class="step">
+          <button id="btnSave">💾 Sauvegarder</button>
+          <button id="btnLoad">📂 Charger</button>
+          <span id="saveInfo" style="font-size:12px;color:var(--dim);margin-left:8px"></span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>📤 Émissions <button class="mini" data-copy="embox">📋 Copier</button></h2>
+    <div id="embox" class="evbox"></div>
+  </div>
+  <div class="card">
+    <h2>📥 Détections physiques <button class="mini" data-copy="evbox">📋 Copier</button></h2>
+    <div id="evbox" class="evbox"></div>
+  </div>
+</section>
+
+<!-- ============ APPRENTISSAGE ============ -->
+<section class="tabpane" id="tab-brain">
+  <div class="card span2">
+    <h2>🧠 Apprentissage automatique — état en direct</h2>
+    <div class="lrgrid">
+      <div class="lrbox"><div class="t">État suivi du ventilateur — identique à Pilotage</div><b id="lrAction">En attente de l'état…</b> <span id="lrMode" class="pill"></span></div>
+      <div class="lrbox"><div class="t">Dernière proposition AUTO — pas un retour matériel</div><b id="lrDecision">En attente…</b></div>
+      <div class="lrbox"><div class="t">Motif du programme</div><span id="lrWhy">En attente…</span></div>
+      <div class="lrbox"><div class="t">Mesure en cours</div><span id="lrEval"></span></div>
+      <div class="lrbox"><div class="t">Figement</div><span id="lrFige"></span></div>
+    </div>
+    <div class="lrgrid">
+      <div class="lrbox"><div class="t">Contexte détecté</div><span id="lrCtx"></span></div>
+      <div class="lrbox"><div class="t">Repères de repli — température de l'air</div><span id="lrSeuils"></span></div>
+      <div class="lrbox"><div class="t">Mémoire</div><span id="lrObs"></span></div>
+    </div>
+  </div>
+
+  <div class="card span2">
+    <h2>🏆 Scénarios figés — mémoire long terme
+      <button class="mini" onclick="send('savoir')">↻ rafraîchir</button>
+      <button class="mini" data-cmd="learnsave">💾 sauver</button>
+    </h2>
+    <div class="sub" style="margin-bottom:6px">Un scénario se fige après 3 mesures concordantes du même réglage dans des conditions proches — il survit aux reboots. Sa confiance baisse si de nouvelles mesures le contredisent.</div>
+    <div id="knowStrip" class="knowstrip"><span class="sub">Aucun pour l'instant — ils apparaîtront après 3 mesures concordantes d'un même réglage.</span></div>
+  </div>
+
+  <div class="card span2">
+    <h2>Préférences utilisateur <button class="mini" data-cmd="savoir">Actualiser</button></h2>
+    <div class="sub">Choix explicites, distincts des mesures thermiques. Le poids augmente avec les choix concordants et baisse avec les corrections contradictoires ; ce n'est pas un pourcentage de satisfaction.</div>
+    <div id="preferenceList" class="knowstrip">En attente de lecture…</div>
+  </div>
+
+  <div class="card span2">
+    <h2>Observations enregistrées <button class="mini" data-cmd="observations">Actualiser</button></h2>
+    <div class="sub" id="observationSummary">Aucune lecture reçue.</div>
+    <div class="sub">Plus récentes en premier, jusqu'à 64 mesures terminées. L'écart corrigé est la variation mesurée moins la dérive prévue : estimation environnementale, pas une mesure de confort. Pas de date fiable conservée après coupure.</div>
+    <div style="overflow:auto;max-height:360px;margin-top:12px">
+      <table style="width:100%;border-spacing:12px 8px;white-space:nowrap;font-size:13px">
+        <thead><tr><th>Ordre</th><th>Réglage</th><th>Air avant → après</th><th>HR initiale</th><th>Variation</th><th>Dérive prévue</th><th>Écart corrigé</th></tr></thead>
+        <tbody id="observationRows"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>Réglages de l'apprentissage</h2>
+    <div class="btns">
+      <button data-cmd="savoir">🏆 savoir</button>
+      <button data-cmd="learnsave">💾 learnsave</button>
+      <button data-cmd="ban1" title="Exclut la vitesse 1 des choix auto">🚫 ban1</button>
+      <button data-cmd="unban1" title="Ré-autorise la vitesse 1">✔ unban1</button>
+      <button class="danger" data-cmd="learnreset" title="Oublie tout : observations, scénarios figés, seuils adaptés">🗑 learnreset</button>
+    </div>
+  </div>
+</section>
+
+<!-- ============ CAPTEURS ============ -->
+<section class="tabpane" id="tab-env">
+  <div class="card span2">
+    <h2>Capteur BME280 — salon</h2>
+    <div class="gauges">
+      <div class="gauge" id="gqT"><div class="val" id="gTemp">--</div><div class="lbl">Température °C</div></div>
+      <div class="gauge"><div class="val" id="gHum">--</div><div class="lbl">Humidité %</div></div>
+      <div class="gauge"><div class="val" id="gPres">--</div><div class="lbl">Pression hPa</div></div>
+      <div class="gauge"><div class="val" id="obs">--</div><div class="lbl">Observations</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ AVANCÉ ============ -->
+<section class="tabpane" id="tab-adv">
+  <div class="card">
+    <h2>Commandes</h2>
+    <div class="btns">
+      <button data-cmd="auto">auto</button>
+      <button data-cmd="status">status</button>
+      <button data-cmd="rftest">rftest</button>
+      <button data-cmd="rfscan">rfscan</button>
+      <button data-cmd="slots">slots</button>
+      <button id="btnVerify" title="Envoie chaque bouton appris et verifie le bip du ventilateur">✅ Vérifier tout</button>
+    </div>
+    <div class="row">
+      <input type="text" id="cmdIn" placeholder="commande personnalisée…">
+      <button id="btnSend">Envoyer</button>
+    </div>
+  </div>
+  <div class="card span2">
+    <h2>Journal série <button class="mini" data-copy="logbox">📋 Copier</button></h2>
+    <div id="logbox"></div>
+    <div class="row">
+      <button id="btnClear">Effacer</button>
+      <button id="btnBottom">↓ Aller en bas</button>
+    </div>
+  </div>
+</section>
+</main>
+
+<script src="js/core.js"></script>
+<script src="js/protocol.js"></script>
+<script src="js/views.js"></script>
+<script src="js/actions.js"></script>
+</body>
+</html>

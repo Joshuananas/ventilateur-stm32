@@ -1,0 +1,23 @@
+{
+  "referenceArchive": {
+    "file": "Projet_ventillateur_reference_20261022_154924.zip",
+    "sha256": "e0136b1847e65f9dc8eeb4de333c863be853a061c95c1859ba87daf76128e99f"
+  },
+  "exactCommands": ["auto", "manual", "status", "txtest", "txscan", "dumpf", "rxstat", "forgesync", "rftest", "rfscan", "learn", "slots", "bits", "bootlog", "logclear", "save", "learnsave", "observations", "savoir", "learnreset", "flasherase", "sniff", "replay", "off", "rev"],
+  "commandPrefixes": ["sync", "timesync", "meteo", "learn", "playi", "playf", "play", "dump", "load", "wipe", "unban", "ban", "observations "],
+  "speedCommands": ["s1", "s2", "s3", "s4", "s5", "s6"],
+  "radio": {"slots": 16, "pulsesPerSlot": 512, "decodedBits": 256},
+  "learning": {"observations": 64, "knowledge": 16, "magic": "0x4E524C31", "version": 5, "preferenceMagic": "0x50524631"},
+  "flash": {"storageAddress": "0x08060000", "storageBAddress": "0x08020000", "copyMagic": "0x43505931", "storageMagic": "0x46414E31", "storageVersion": 1, "bootlogBase": "0x08040000", "bootlogEnd": "0x08060000", "bootRecordMagic": "0x42544C31", "bootRecordSize": 16, "bootHeaderMagic": "0x424C4831", "currentUploadMaximum": 131072, "requiredFirmwareMaximum": 131072},
+  "knownLimitations": ["Upload maximum exceeds the journal start; address reservation is deferred to the planned memory-layout step.", "These are source-contract guards, not a runtime C++ serializer or hardware test.", "No STM32 flash contents were read for this reference."],
+  "structures": {
+    "StoredPreference": "float temp, hum; uint8_t speed, dir, votes, winter;",
+    "StoredObs": "uint32_t timestamp; uint8_t speed, dir, pad[2]; float tempBefore, tempAfter, humBefore, delta, expected;",
+    "StoredKnow": "uint8_t speed, dir, n, pad; float tempC, humC, delta, conf;",
+    "StoredLearn": "uint32_t magic; uint32_t version; float thresholds[2][3]; uint8_t count, head, knowCount, pad; StoredObs obs[FanLearner::CAPACITY]; StoredKnow know[FanLearner::KNOW_CAP]; uint32_t crc32; uint32_t preferenceMagic; StoredPreference preferences[16]; uint32_t preferenceCrc;",
+    "StoredSlot": "uint16_t count; uint16_t pulses[CC1101::MAX_PULSES];",
+    "StoredFanState": "uint8_t known, powerOn, speed, reverse, light, pad[3];",
+    "StorageBlob": "uint32_t magic; uint32_t version; StoredFanState fan; StoredSlot slots[CC1101::MAX_SLOTS]; uint32_t crc32; StoredLearn learn;"
+  },
+  "remoteLabels": {"0": "Power", "1": "Vitesse 1", "2": "Vitesse 2", "3": "Vitesse 3", "4": "Vitesse 4", "5": "Vitesse 5", "6": "Vitesse 6", "7": "Lumière", "8": "Reverse", "9": "−", "10": "+", "11": "Timer 1H", "12": "Timer 3H", "13": "Timer 6H"}
+}
